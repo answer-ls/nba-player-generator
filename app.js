@@ -435,13 +435,22 @@ function generateMatchup() {
     matchupResult.style.display = 'none';
     teamsResult.style.display = 'none';
     
-    // 模拟加载效果
+    // 模拟加载效果 - 使用更短的延迟并添加调试信息
     setTimeout(() => {
         try {
+            console.log("开始生成球员对决...");
             const players = getRandomPlayers(playerType, 4);
+            console.log("获取到的球员:", players);
+            
+            // 确保DOM元素存在
+            const team1PlayersDiv = document.getElementById('team1Players');
+            const team2PlayersDiv = document.getElementById('team2Players');
+            
+            if (!team1PlayersDiv || !team2PlayersDiv) {
+                throw new Error('找不到DOM元素');
+            }
             
             // 更新队伍1的球员
-            const team1PlayersDiv = document.getElementById('team1Players');
             team1PlayersDiv.innerHTML = players.slice(0, 2).map(player => `
                 <div class="player-card">
                     <div class="player-name">${player.name}</div>
@@ -450,7 +459,6 @@ function generateMatchup() {
             `).join('');
             
             // 更新队伍2的球员
-            const team2PlayersDiv = document.getElementById('team2Players');
             team2PlayersDiv.innerHTML = players.slice(2, 4).map(player => `
                 <div class="player-card">
                     <div class="player-name">${player.name}</div>
@@ -458,15 +466,20 @@ function generateMatchup() {
                 </div>
             `).join('');
             
+            console.log("球员信息已更新");
+            
             // 显示结果
             loading.style.display = 'none';
             matchupResult.style.display = 'block';
+            console.log("显示结果");
         } catch (error) {
             console.error('生成球员对决时出错:', error);
             loading.style.display = 'none';
-            alert('生成球员对决时出现错误，请刷新页面重试。');
+            matchupResult.style.display = 'block';
+            document.getElementById('team1Players').innerHTML = '<div class="player-card">生成失败，请刷新页面重试</div>';
+            document.getElementById('team2Players').innerHTML = '<div class="player-card">生成失败，请刷新页面重试</div>';
         }
-    }, 800);
+    }, 500); // 减少延迟时间
 }
 
 // 生成球队
