@@ -421,6 +421,7 @@ function getRandomTeam() {
 }
 
 // 生成对决 - 只显示球员信息，不生成随机球队
+// 生成对决 - 修复版本
 function generateMatchup() {
     const playerType = document.querySelector('input[name="playerType"]:checked').value;
     const loading = document.getElementById('loading');
@@ -436,29 +437,35 @@ function generateMatchup() {
     
     // 模拟加载效果
     setTimeout(() => {
-        const players = getRandomPlayers(playerType, 4);
-        
-        // 更新队伍1的球员
-        const team1PlayersDiv = document.getElementById('team1Players');
-        team1PlayersDiv.innerHTML = players.slice(0, 2).map(player => `
-            <div class="player-card">
-                <div class="player-name">${player.name}</div>
-                <div class="player-details">${player.chinese} • ${player.team} • ${player.position}</div>
-            </div>
-        `).join('');
-        
-        // 更新队伍2的球员
-        const team2PlayersDiv = document.getElementById('team2Players');
-        team2PlayersDiv.innerHTML = players.slice(2, 4).map(player => `
-            <div class="player-card">
-                <div class="player-name">${player.name}</div>
-                <div class="player-details">${player.chinese} • ${player.team} • ${player.position}</div>
-            </div>
-        `).join('');
-        
-        // 显示结果
-        loading.style.display = 'none';
-        matchupResult.style.display = 'block';
+        try {
+            const players = getRandomPlayers(playerType, 4);
+            
+            // 更新队伍1的球员
+            const team1PlayersDiv = document.getElementById('team1Players');
+            team1PlayersDiv.innerHTML = players.slice(0, 2).map(player => `
+                <div class="player-card">
+                    <div class="player-name">${player.name}</div>
+                    <div class="player-details">${player.chinese} • ${player.team} • ${player.position}</div>
+                </div>
+            `).join('');
+            
+            // 更新队伍2的球员
+            const team2PlayersDiv = document.getElementById('team2Players');
+            team2PlayersDiv.innerHTML = players.slice(2, 4).map(player => `
+                <div class="player-card">
+                    <div class="player-name">${player.name}</div>
+                    <div class="player-details">${player.chinese} • ${player.team} • ${player.position}</div>
+                </div>
+            `).join('');
+            
+            // 显示结果
+            loading.style.display = 'none';
+            matchupResult.style.display = 'block';
+        } catch (error) {
+            console.error('生成球员对决时出错:', error);
+            loading.style.display = 'none';
+            alert('生成球员对决时出现错误，请刷新页面重试。');
+        }
     }, 800);
 }
 
