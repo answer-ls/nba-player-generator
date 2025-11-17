@@ -420,7 +420,7 @@ function getRandomTeam() {
     return teams[Math.floor(Math.random() * teams.length)];
 }
 
-// 生成对决
+// 生成对决 - 只显示球员信息，不生成随机球队
 function generateMatchup() {
     const playerType = document.querySelector('input[name="playerType"]:checked').value;
     const loading = document.getElementById('loading');
@@ -437,11 +437,8 @@ function generateMatchup() {
     // 模拟加载效果
     setTimeout(() => {
         const players = getRandomPlayers(playerType, 4);
-        const team1Name = getRandomTeam();
-        const team2Name = getRandomTeam();
         
-        // 更新队伍1
-        document.getElementById('team1Name').textContent = team1Name;
+        // 更新队伍1的球员
         const team1PlayersDiv = document.getElementById('team1Players');
         team1PlayersDiv.innerHTML = players.slice(0, 2).map(player => `
             <div class="player-card">
@@ -450,8 +447,7 @@ function generateMatchup() {
             </div>
         `).join('');
         
-        // 更新队伍2
-        document.getElementById('team2Name').textContent = team2Name;
+        // 更新队伍2的球员
         const team2PlayersDiv = document.getElementById('team2Players');
         team2PlayersDiv.innerHTML = players.slice(2, 4).map(player => `
             <div class="player-card">
@@ -468,7 +464,6 @@ function generateMatchup() {
 
 // 生成球队
 function generateTeams() {
-    const playerType = document.querySelector('input[name="playerType"]:checked').value;
     const loading = document.getElementById('loading');
     const resultContainer = document.getElementById('resultContainer');
     const matchupResult = document.getElementById('matchupResult');
