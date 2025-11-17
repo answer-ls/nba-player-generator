@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NBA球员生成器 - 学生作品</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 400px;
+            margin: 0 auto;
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            color: white;
+        }
+        
+        .logo {
+            font-size: 3rem;
+            margin-bottom: 10px;
+        }
+        
+        .title {
+            font-size: 1.8rem;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+        
+        .subtitle {
+            font-size: 1rem;
+            opacity: 0.9;
+        }
+        
+        .card {
+            background: white;
+            border-radius: 20px;
+            padding: 25px;
+            margin-bottom: 20px;
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.1);
+        }
+        
+        .mode-selector {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        
+        .mode-btn {
+            flex: 1;
+            padding: 12px;
+            border: 2px solid #e5e7eb;
+            border-radius: 10px;
+            background: white;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .mode-btn.active {
+            border-color: #1e3a8a;
+            background: #1e3a8a;
+            color: white;
+        }
+        
+        .player-type {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        
+        .radio-group {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        
+        .generate-btn {
+            width: 100%;
+            padding: 15px;
+            background: #1e3a8a;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+        
+        .generate-btn:hover {
+            background: #1e40af;
+        }
+        
+        .result-container {
+            display: none;
+        }
+        
+        .team {
+            margin-bottom: 25px;
+        }
+        
+        .team-name {
+            font-size: 1.3rem;
+            font-weight: bold;
+            color: #1e3a8a;
+            margin-bottom: 15px;
+            text-align: center;
+        }
+        
+        .player-card {
+            background: #f8fafc;
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 10px;
+            border-left: 4px solid #1e3a8a;
+        }
+        
+        .player-name {
+            font-weight: bold;
+            font-size: 1rem;
+            margin-bottom: 5px;
+        }
+        
+        .player-details {
+            font-size: 0.9rem;
+            color: #666;
+        }
+        
+        .vs {
+            text-align: center;
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #1e3a8a;
+            margin: 20px 0;
+        }
+        
+        .loading {
+            text-align: center;
+            color: #666;
+            font-size: 1.1rem;
+        }
+        
+        .share-section {
+            text-align: center;
+            margin-top: 20px;
+        }
+        
+        .share-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 20px;
+            background: #25D366;
+            color: white;
+            border: none;
+            border-radius: 20px;
+            cursor: pointer;
+        }
+        
+        .footer {
+            text-align: center;
+            color: white;
+            margin-top: 30px;
+            font-size: 0.9rem;
+            opacity: 0.8;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="logo">🏀</div>
+            <h1 class="title">NBA球员生成器</h1>
+            <p class="subtitle">学生作品 - 完全免费使用</p>
+        </div>
+        
+        <div class="card">
+            <div class="mode-selector">
+                <button class="mode-btn active" data-mode="matchup">球员对决</button>
+                <button class="mode-btn" data-mode="teams">球队生成</button>
+            </div>
+            
+            <div class="player-type">
+                <div class="radio-group">
+                    <input type="radio" id="active" name="playerType" value="active" checked>
+                    <label for="active">现役球员</label>
+                </div>
+                <div class="radio-group">
+                    <input type="radio" id="classic" name="playerType" value="classic">
+                    <label for="classic">经典球员</label>
+                </div>
+            </div>
+            
+            <button class="generate-btn" id="generateBtn">生成对决</button>
+        </div>
+        
+        <div class="card result-container" id="resultContainer">
+            <div class="loading" id="loading">正在生成中...</div>
+            
+            <div id="matchupResult" style="display: none;">
+                <div class="team">
+                    <div class="team-name" id="team1Name"></div>
+                    <div id="team1Players"></div>
+                </div>
+                
+                <div class="vs">VS</div>
+                
+                <div class="team">
+                    <div class="team-name" id="team2Name"></div>
+                    <div id="team2Players"></div>
+                </div>
+            </div>
+            
+            <div id="teamsResult" style="display: none;">
+                <div class="team">
+                    <div class="team-name" id="teamA"></div>
+                    <div id="teamAPlayers"></div>
+                </div>
+                
+                <div class="vs">VS</div>
+                
+                <div class="team">
+                    <div class="team-name" id="teamB"></div>
+                    <div id="teamBPlayers"></div>
+                </div>
+            </div>
+            
+            <div class="share-section">
+                <button class="share-btn" onclick="shareResult()">
+                    📱 分享结果
+                </button>
+            </div>
+        </div>
+        
+        <div class="footer">
+            <p>学生个人开发作品</p>
+            <p>仅供学习交流使用</p>
+            <p>数据来源: NBA公开信息</p>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
